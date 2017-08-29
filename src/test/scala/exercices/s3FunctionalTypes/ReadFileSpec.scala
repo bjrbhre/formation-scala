@@ -19,7 +19,7 @@ class ReadFileSpec extends FunSpec with Matchers {
     }
     describe("parseFile") {
       it("should parse lines with headers") {
-        readFile(path).map(parseFile) match {
+        readFile(path).map(readLines) match {
           case Failure(e) => fail(e.getMessage)
           case Success(lines) =>
             lines.length shouldBe 100
@@ -51,7 +51,7 @@ class ReadFileSpec extends FunSpec with Matchers {
     }
     describe("loadData") {
       it("should return valid and invalid results with line index") {
-        val (users, errors) = loadData(path).get
+        val (users, errors) = loadData(path)
         users.length shouldBe 98
         errors.length shouldBe 2
         errors.map { case (i, e) => (i, e.getMessage) } shouldBe Seq(

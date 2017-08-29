@@ -2,7 +2,7 @@ package exercices.s4FunctionalProgramming
 
 import java.sql.Connection
 
-import scala.util.{Failure, Random, Success, Try}
+import scala.util.{Random, Try}
 
 object GetConnectionRefactoring {
   /**
@@ -13,18 +13,17 @@ object GetConnectionRefactoring {
     *   - use functional style
     */
   def connect(urls: Seq[String]): Option[Connection] = {
+    var connection: Option[Connection] = None
     Random.shuffle(urls).find { url =>
-      getConnection(url) match {
-        case Success(connection) =>
-          connection.close()
-          true
-        case Failure(_) =>
-          false
-      }
-    } match {
-      case Some(url) => getConnection(url).toOption
-      case _ => None
-    }
+      connection = getConnection(url).toOption
+      connection.isDefined
+    }.flatMap(_ => connection)
+  }
+
+  def connectLazy(urls: Seq[String]): Option[Connection] = {
+    Random.shuffle(urls).toStream
+      .flatMap(url => getConnection(url).toOption)
+      .headOption
   }
 
   private def getConnection(url: String): Try[Connection] = {
