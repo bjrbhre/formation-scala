@@ -20,16 +20,39 @@ object Devoxx {
   case class Room(id: RoomId, name: String)
 
   // calcule le pourcentage de talks en français (chiffre entre 0 et 100)
-  def frenchTalkPercentage(talks: Seq[Talk]): Double = ???
+  def frenchTalkPercentage(talks: Seq[Talk]): Double = {
+    100 * talks.count(t => t.lang == "fr") / talks.size
+  }
 
   // trouve les talks du speaker indiqué
-  def talksOfSpeaker(talks: Seq[Talk], id: SpeakerId): Seq[Talk] = ???
+  def talksOfSpeaker(talks: Seq[Talk], id: SpeakerId): Seq[Talk] = {
+    talks.filter(talk => talk.speakers.contains(id))
+  }
 
   // extrait le programme d'une salle avec les horaires (début & fin) et le talk associé
-  def roomSchedule(slots: Seq[Slot], talks: Seq[Talk], id: RoomId): Seq[(Date, Date, Talk)] = ???
+  def roomSchedule(slots: Seq[Slot], talks: Seq[Talk], id: RoomId): Seq[(Date, Date, Talk)] = {
+    //val talksMap = talks.groupBy(_.id).mapValues(_.head)
+    val talksMap = talks.map(t => (t.id, t)).toMap
+    def slotToTuple(s: Slot, talksMap: Map[TalkId, Talk]): (Date, Date, Option[Talk]) = {
+      (s.start, s.end, talksMap.get(s.talk))
+    }
+    slots
+      .filter(s => s.room == id)
+      .map(s => slotToTuple(s, talksMap))
+      .collect { case (start, end, Some(talk)) => (start, end, talk) }
+      //.map(s => (s.start, s.end, talks.find(talk => s.talk == talk.id)))
+      //.filter { case (_, _, talkOpt) => talkOpt.isDefined }
+      //.map { case (star, end, talkOpt => (start, end, talkOpt.get)) }
+  }
 
   // si le speaker est en train de présenter à la date donnée, renvoi la salle où il présente, sinon rien
-  def isSpeaking(slots: Seq[Slot], talks: Seq[Talk], rooms: Seq[Room], id: SpeakerId, time: Date): Option[Room] = ???
+  def isSpeaking(slots: Seq[Slot], talks: Seq[Talk], rooms: Seq[Room], id: SpeakerId, time: Date): Option[Room] = {
+    slots
+      .filter(s => s.start.before(time) && s.end.after(time))
+      .filter(s => talks.find(t => t.id == s.talk).exists(t => t.speakers.contains(id)))
+      .flatMap(s => rooms.find(_.id == s.room))
+      .headOption
+  }
 
   /**
     *     ---------- Ne pas modifier ----------
