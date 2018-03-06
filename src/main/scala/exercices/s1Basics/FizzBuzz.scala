@@ -10,4 +10,17 @@ object FizzBuzz {
     *   - le nombre sous forme de String sinon
     */
 
+  def apply(i: Int): String = {
+    (i % 3 == 0, i % 5 == 0) match {
+      case (true, true) => "FizzBuzz"
+      case (true, false) => "Fizz"
+      case (false, true) => "Buzz"
+      case _ => i.toString
+    }
+  }
+
+  def main(args: Array[String]): Unit = {
+    var i = args(0).toInt
+    println(apply(i))
+  }
 }

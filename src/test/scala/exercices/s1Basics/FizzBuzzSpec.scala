@@ -27,5 +27,28 @@ class FizzBuzzSpec extends FunSpec with Matchers {
       *   - fizzBuzz(20) => "Buzz"
       */
 
+    it("should return Fizz when 1") {
+      FizzBuzz(1) shouldBe "1"
+    }
+
+    it("should return 2 when 2") {
+      FizzBuzz(2) shouldBe "2"
+    }
+
+    it("should return Buzz when 3") {
+      FizzBuzz(3) shouldBe "Fizz"
+    }
+
+    it("should return Buzz when 5") {
+      FizzBuzz(5) shouldBe "Buzz"
+    }
+
+    it("should return Buzz when 6") {
+      FizzBuzz(6) shouldBe "Fizz"
+    }
+
+    it("should return Buzz when 15") {
+      FizzBuzz(15) shouldBe "FizzBuzz"
+    }
   }
 }
