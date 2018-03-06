@@ -20,5 +20,17 @@ class AverageAgeSpec extends FunSpec with Matchers {
       *   - averageAge(employees, 25) => 42
       *   - averageAge(employees, 25, RnD) => 43
       */
+
+    it("Should return global average") {
+      AverageAge(employees) shouldBe 34.6
+    }
+
+    it("Should return average filtered on age") {
+      AverageAge(employees, 25) shouldBe 42
+    }
+
+    it("Should return average filtered on age and team") {
+      AverageAge(employees, 25, Some(RnD)) shouldBe 43
+    }
   }
 }

@@ -15,4 +15,13 @@ object AverageAge {
     def has(employee: Employee): Boolean = employees.contains(employee)
   }
 
+  def apply(employees: Seq[Employee], minimumAge: Int = 0, teamOption: Option[Team] = None): Double = {
+    var ageGroup = employees.filter(e => e.age > minimumAge)
+    var teammates = teamOption match {
+      case Some(team) => ageGroup.filter(team.has)
+      case None =>  ageGroup
+    }
+    val teamsize: Double = teammates.size
+    teammates.map(_.age).sum / teamsize
+  }
 }
